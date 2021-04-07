@@ -23,6 +23,9 @@ function compose_email() {
 }
 
 function load_mailbox(mailbox) {
+
+  // Clear mailbox divs
+  document.querySelector("#mailbox-content").innerHTML = "";
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
@@ -36,15 +39,16 @@ function load_mailbox(mailbox) {
   .then(response => response.json())
   .then(emails => emails.forEach( email => {
 
-    // Create html elements li>div.row
+    // Create html elements li>a>div.col
     const listItem = document.createElement("li");
     listItem.className = "list-group-item";
-    const row = document.createElement("div");
-
-    row.className = "row";
+    
+    const rowLink = document.createElement("a");
+    rowLink.href = ""
+    rowLink.className = "row";
 
     const column1 = document.createElement("div");
-    column1.className = "col-2";
+    column1.className = "col-2 font-weight-bold";
 
     // Sent => Shows recipients . Archived/Inbox => Shows sender
     if (mailbox === "sent") {
@@ -62,8 +66,8 @@ function load_mailbox(mailbox) {
     column3.innerHTML = `${email.timestamp}`;
 
     // Nest elements col>row>li
-    row.append(column1, column2, column3);
-    listItem.append(row);
+    rowLink.append(column1, column2, column3);
+    listItem.append(rowLink);
     document.querySelector("#mailbox-content").append(listItem);
     
   }))
