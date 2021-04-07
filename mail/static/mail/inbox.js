@@ -29,7 +29,45 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#mailbox-title').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  // Load emails 
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => emails.forEach( email => {
+
+    // Create html elements li>div.row
+    const listItem = document.createElement("li");
+    listItem.className = "list-group-item";
+    const row = document.createElement("div");
+
+    row.className = "row";
+
+    const column1 = document.createElement("div");
+    column1.className = "col-2";
+
+    // Sent => Shows recipients . Archived/Inbox => Shows sender
+    if (mailbox === "sent") {
+        column1.innerHTML = `${email.recipients}`;
+    } else {
+        column1.innerHTML = `${email.sender}`;
+    }
+
+    const column2 = document.createElement("div");
+    column2.className = "col-7";
+    column2.innerHTML = `${email.subject}`;
+
+    const column3 = document.createElement("div");
+    column3.className = "col-3 text-right";
+    column3.innerHTML = `${email.timestamp}`;
+
+    // Nest elements col>row>li
+    row.append(column1, column2, column3);
+    listItem.append(row);
+    document.querySelector("#mailbox-content").append(listItem);
+    
+  }))
+
 }
 
 function send_email(event) { 
@@ -47,6 +85,4 @@ function send_email(event) {
   .then(result => console.log(result));
 
   load_mailbox("sent")
-
-  return false;
 }
