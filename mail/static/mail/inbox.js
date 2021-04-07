@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function compose_email() {
 
   // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#mailbox-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -22,13 +22,23 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
+function load_email(email_id) {
+  console.log(email_id);
+  // Load email
+  email = fetch(`/emails/${email_id}`)
+  .then(response => response.json());
+  /*.then(email => {
+    #TODO
+  });*/
+}
+
 function load_mailbox(mailbox) {
 
   // Clear mailbox divs
   document.querySelector("#mailbox-content").innerHTML = "";
   
   // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#mailbox-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
@@ -43,9 +53,9 @@ function load_mailbox(mailbox) {
     const listItem = document.createElement("li");
     listItem.className = "list-group-item";
     
-    const rowLink = document.createElement("a");
-    rowLink.href = ""
-    rowLink.className = "row";
+    const row = document.createElement("div");
+    row.onclick = () => load_email(email.id);
+    row.className = "row";
 
     const column1 = document.createElement("div");
     column1.className = "col-2 font-weight-bold";
@@ -66,8 +76,8 @@ function load_mailbox(mailbox) {
     column3.innerHTML = `${email.timestamp}`;
 
     // Nest elements col>row>li
-    rowLink.append(column1, column2, column3);
-    listItem.append(rowLink);
+    row.append(column1, column2, column3);
+    listItem.append(row);
     document.querySelector("#mailbox-content").append(listItem);
     
   }))
