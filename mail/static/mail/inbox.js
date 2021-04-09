@@ -31,7 +31,7 @@ function load_email(email_id) {
   document.querySelector('#compose-view').style.display = 'none';
 
   // Load email
-  const email = fetch(`/emails/${email_id}`)
+  fetch(`/emails/${email_id}`)
   .then(response => response.json())
   .then(email => {
     document.querySelectorAll('#email-subject', '#email-info', '#email-body')
@@ -53,6 +53,15 @@ function load_email(email_id) {
     document.querySelector('#email-body').innerHTML = `${email.body}`;
 
   });
+
+  //update read
+  fetch(`/emails/${email.id}`, {
+    method: "PUT";
+    body: JSON.stringify({
+      read: true
+    })
+  });
+  
 }
 
 function load_mailbox(mailbox) {
