@@ -14,6 +14,7 @@ function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#mailbox-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -23,13 +24,35 @@ function compose_email() {
 }
 
 function load_email(email_id) {
-  console.log(email_id);
+
+  // Show email view and hide other views
+  document.querySelector('#email-view').style.display = 'block';
+  document.querySelector('#mailbox-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+
   // Load email
-  email = fetch(`/emails/${email_id}`)
-  .then(response => response.json());
-  /*.then(email => {
-    #TODO
-  });*/
+  const email = fetch(`/emails/${email_id}`)
+  .then(response => response.json())
+  .then(email => {
+    document.querySelectorAll('#email-subject', '#email-info', '#email-body')
+    .forEach(node => node.innerHTML = "");
+
+    //subject
+    const subject = document.createElement("h2");
+    subject.innerHTML = `${email.subject}`;
+    document.querySelector('#email-subject').append(subject);
+
+    //info
+    const info = 
+    `<strong>From: </strong> ${email.sender}
+    <br><strong>To: </strong> ${email.recipients}
+    <br><strong>Timestamp: </strong> ${email.timestamp}`;
+    document.querySelector('#email-info').innerHTML = info;
+
+    //body
+    document.querySelector('#email-body').innerHTML = `${email.body}`;
+
+  });
 }
 
 function load_mailbox(mailbox) {
@@ -39,6 +62,7 @@ function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
   document.querySelector('#mailbox-view').style.display = 'block';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
