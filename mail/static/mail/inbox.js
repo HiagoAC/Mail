@@ -10,6 +10,25 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
+function archive(email_id, trueOrFalse) {
+
+  //archive or unarchive email
+  fetch(`emails/${email_id}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      archived: trueOrFalse
+    })
+  })
+  .then(() => {
+    // Update archive button
+    if (document.querySelector('#archive-button').innerHTML === "Archive")
+      document.querySelector('#archive-button').innerHTML = "Unarchive";
+    else
+      document.querySelector('#archive-button').innerHTML = "Archive";
+  });
+
+}
+
 function compose_email() {
 
   // Show compose view and hide other views
@@ -36,7 +55,7 @@ function load_email(email_id) {
   .then(email => {
     document.querySelectorAll('#email-subject', '#email-info', '#email-body')
     .forEach(node => node.innerHTML = "");
-
+    console.log(email);
     //subject
     const subject = document.createElement("h2");
     subject.innerHTML = `${email.subject}`;
@@ -52,9 +71,18 @@ function load_email(email_id) {
     //body
     document.querySelector('#email-body').innerHTML = `${email.body}`;
 
+    //archive button
+    if (email.archived) {
+      document.querySelector('#archive-button').innerHTML = "Unarchive";
+      document.querySelector('#archive-button').onclick = () => archive(email.id, true);
+    } else {
+      document.querySelector('#archive-button').innerHTML = "Archive";
+      document.querySelector('#archive-button').onclick = () => archive(email.id, false);
+    }
+
   });
 
-  //update read
+  // Update read
   fetch(`/emails/${email_id}`, {
     method: "PUT",
     body: JSON.stringify({
