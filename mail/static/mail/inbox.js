@@ -55,13 +55,13 @@ function load_email(email_id) {
   });
 
   //update read
-  fetch(`/emails/${email.id}`, {
-    method: "PUT";
+  fetch(`/emails/${email_id}`, {
+    method: "PUT",
     body: JSON.stringify({
       read: true
     })
   });
-  
+
 }
 
 function load_mailbox(mailbox) {
@@ -93,6 +93,10 @@ function load_mailbox(mailbox) {
     const column1 = document.createElement("div");
     column1.className = "col-2 font-weight-bold";
 
+    // Update color if email has been read
+    if (email.read)
+      listItem.style.backgroundColor = "whitesmoke";
+
     // Sent => Shows recipients . Archived/Inbox => Shows sender
     if (mailbox === "sent") {
         column1.innerHTML = `${email.recipients}`;
@@ -118,7 +122,6 @@ function load_mailbox(mailbox) {
 }
 
 function send_email(event) { 
-  console.log(event.target.elements.sender.value);
 
   fetch("/emails", {
     method: "POST",
@@ -128,8 +131,7 @@ function send_email(event) {
       body: event.target.elements.body.value
     })
   })
-  .then(response => response.json())
-  .then(result => console.log(result));
+  .then(response => response.json());
 
   load_mailbox("sent")
 }
