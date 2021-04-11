@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function archive(email_id, trueOrFalse) {
+  console.log(`lele ${trueOrFalse}`);
 
   //archive or unarchive email
   fetch(`emails/${email_id}`, {
@@ -25,7 +26,7 @@ function archive(email_id, trueOrFalse) {
       document.querySelector('#archive-button').innerHTML = "Unarchive";
     else
       document.querySelector('#archive-button').innerHTML = "Archive";
-  });
+  })
 
 }
 
@@ -60,7 +61,7 @@ function load_email(email_id) {
     const subject = document.createElement("h2");
     subject.innerHTML = `${email.subject}`;
     document.querySelector('#email-subject').append(subject);
-
+    console.log(email);
     //info
     const info = 
     `<strong>From: </strong> ${email.sender}
@@ -74,10 +75,10 @@ function load_email(email_id) {
     //archive button
     if (email.archived) {
       document.querySelector('#archive-button').innerHTML = "Unarchive";
-      document.querySelector('#archive-button').onclick = () => archive(email.id, true);
+      document.querySelector('#archive-button').onclick = () => archive(email.id, false);
     } else {
       document.querySelector('#archive-button').innerHTML = "Archive";
-      document.querySelector('#archive-button').onclick = () => archive(email.id, false);
+      document.querySelector('#archive-button').onclick = () => archive(email.id, true);
     }
 
   });
