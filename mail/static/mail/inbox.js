@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function archive(email_id, trueOrFalse) {
-  console.log(`lele ${trueOrFalse}`);
 
   //archive or unarchive email
   fetch(`emails/${email_id}`, {
@@ -30,17 +29,32 @@ function archive(email_id, trueOrFalse) {
 
 }
 
-function compose_email() {
+function compose_email(email) {
 
   // Show compose view and hide other views
   document.querySelector('#mailbox-view').style.display = 'none';
   document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  // New email
+  if (email === undefined) {
+    
+    // Clear out composition fields
+    document.querySelector('#compose-recipients').value = '';
+    document.querySelector('#compose-subject').value = '';
+    document.querySelector('#compose-body').value = '';
+  }
+  // Reply 
+  else {
+
+    // Change title to Reply
+    document.querySelector('#compose-title').value = "Reply";
+
+    // Pre-fill fields
+    document.querySelector('#compose-recipients').value = email.sender;
+    document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+    document.querySelector('#compose-body').value = `\n\n\n On ${email.timestamp} ${email.sender} wrote: \n ${email.body}`;
+  }
 }
 
 function load_email(email_id) {
@@ -54,14 +68,16 @@ function load_email(email_id) {
   fetch(`/emails/${email_id}`)
   .then(response => response.json())
   .then(email => {
+
+    // Clear fields
     document.querySelectorAll('#email-subject', '#email-info', '#email-body')
     .forEach(node => node.innerHTML = "");
-    console.log(email);
+
     //subject
     const subject = document.createElement("h2");
     subject.innerHTML = `${email.subject}`;
     document.querySelector('#email-subject').append(subject);
-    console.log(email);
+
     //info
     const info = 
     `<strong>From: </strong> ${email.sender}
@@ -81,6 +97,9 @@ function load_email(email_id) {
       document.querySelector('#archive-button').onclick = () => archive(email.id, true);
     }
 
+    //reply button
+    document.querySelector('#reply-button').onclick = () => compose_email(email);
+  
   });
 
   // Update read
