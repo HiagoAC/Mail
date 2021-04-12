@@ -36,15 +36,15 @@
         <h3 id="compose-title">New Email</h3>
         <form id="compose-form" onsubmit="return send_email(event)">
             <div class="form-group">
-                From: <input disabled class="form-control" name="sender" value="{{ request.user.email }}">
+                From: <input disabled class="form-control" name="sender" value="{{ request.user.email }}" required>
             </div>
             <div class="form-group">
-                To: <input id="compose-recipients" class="form-control" name="recipients">
+                To: <input id="compose-recipients" class="form-control" name="recipients" required>
             </div>
             <div class="form-group">
-                <input class="form-control" name="subject" id="compose-subject" placeholder="Subject">
+                Subject: <input class="form-control" name="subject" id="compose-subject" placeholder="Subject" required>
             </div>
-            <textarea class="form-control" name="body" id="compose-body" placeholder="Body"></textarea>
+            <textarea class="form-control" name="body" id="compose-body" placeholder="Body" required></textarea>
             <br>
             <input type="submit" class="btn btn-primary" value="Send"/>
         </form>
